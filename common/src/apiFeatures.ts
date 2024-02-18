@@ -1,29 +1,29 @@
 import { Query } from "mongoose";
 import {} from "mongoose";
-interface t {
+export interface g {
     page?:string;
     sort?:string;
     select?:string;
     limit?:string;
     keyword?:string;
 };
-
-interface Pagination {
+export interface Pagination {
     currentPage?:number;
     previousPage?:number;
     nextPage?:number;
     numOfPages?:number;
-    skip:number;
-    limit:number;
+    skip?:number;
+    limit?:number;
 };
 
-export class apiFeatures< T , m extends t > {
-    paginationObj:Pagination;
+export class apiFeatures< T , m extends g > {
+    public paginationObj:Pagination={};
     constructor( public query:Query< T[] , T > , public queryObj:m ){};
     filter(obj={}){
+        
         let filter={ ... this.queryObj , ... obj };
-        let fields=['keyword','page','limit','select','sort'];
-        fields.forEach( (field) => { delete filter[field] } );
+        let fields : ('keyword'|'page'|'limit'|'select'|'sort')[]=['keyword','page','limit','select','sort'];
+        fields.forEach( (field  ) => { delete filter[field] } );
         let queryStr=JSON.stringify(filter);
         queryStr=queryStr.replace( /lt|gt|lte|gte/g , val => `$${val}` );
         filter=JSON.parse(queryStr);
@@ -40,7 +40,7 @@ export class apiFeatures< T , m extends t > {
     select(){
         if(this.queryObj.select){
             const select= this.queryObj.select.split(',').join(' ');
-            this.query=this.query.sort(select);
+            this.query=this.query.select(select);
         };
         return this;
     };

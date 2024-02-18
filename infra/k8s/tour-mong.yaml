@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tour-mongo-depl
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: tour-mongo
+  template:
+    metadata:
+      labels:
+        app: tour-mongo
+    spec:
+      containers:
+      - name: tour-mongo
+        image: mongo
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: tour-mongo-srv
+spec:
+  selector:
+    app: tour-mongo
+  ports:
+  - port: 27017
+    targetPort: 27017
+
